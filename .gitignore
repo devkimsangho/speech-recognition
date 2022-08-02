@@ -1,0 +1,5 @@
+# pycache folder
+__pycache__/
+
+# .mp4 file
+*.mp4
