@@ -12,6 +12,6 @@ for i in range(len(file_list)):
     file_name = file_list[i]
     print('{} / {} files covert completed...'.format(i+1, len(file_list)), end='\r')
     sound = AudioSegment.from_file("{}/data/this_voice/{}".format(PARENT_DIR, file_name))
-    sound.export("{}/data/convert/{}.flac".format(PARENT_DIR, file_name), format='flac')
+    sound.export("{}/data/convert/{}.flac".format(PARENT_DIR, file_name[:-4]), format='flac')
 print('')
 print('done')
