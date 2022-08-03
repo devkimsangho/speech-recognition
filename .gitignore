@@ -4,8 +4,11 @@ __pycache__/
 # virtual-envs
 .venv/
 
-# .mp4 file
+# .media file
 *.mp4
+*.m4a
+*.flac
+*.wav
 
 # ffmpeg folder
 ## /fds/converter/ffmpeg/
