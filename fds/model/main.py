@@ -31,22 +31,26 @@ PARENT_DIR = os.path.dirname((CUR_DIR))
 ROOT_DIR = os.path.dirname((PARENT_DIR))
 
 if __name__ == '__main__':
-    # dataset = pd.read_csv('{}/data/dataset/dataset.csv'.format(PARENT_DIR), names=['text', 'fishing'])
-    # dataset = preprocessing.remove_spectial_character(dataset)
 
-    # print('Dataset 분리\n')
-    # # 데이터 셋 분리
-    # train = dataset[:4784]
-    # test = dataset[4784:]
+    dataset = pd.read_csv('{}/data/dataset/dataset.csv'.format(PARENT_DIR), names=['text', 'fishing'])
+    dataset = preprocessing.remove_spectial_character(dataset)
+    dataset['length'] = dataset['text'].apply(lambda x: len(x))
+    print(len(dataset))
+    dataset = dataset.drop(dataset[dataset['length'] > 4000].index)
+    print(len(dataset))
+    print('Dataset 분리\n')
+    # 데이터 셋 분리
+    train = dataset[:4784]
+    test = dataset[4784:]
 
     # print('토큰화 \n')
     # # 토큰화 진행
-    # train['tokenized'] = train['text(clean)'].apply(preprocessing.tokenizer)
-    # test['tokenized'] = test['text(clean)'].apply(preprocessing.tokenizer)
+    train['tokenized'] = train['text(clean)'].apply(preprocessing.tokenizer)
+    test['tokenized'] = test['text(clean)'].apply(preprocessing.tokenizer)
 
     # print('train/val 분리\n')
-    # # train set test-val 분리
-    # train, val = train_test_split(train, test_size=0.3, random_state=42)
+    # train set test-val 분리
+    train, val = train_test_split(train, test_size=0.3, random_state=42)
     train = pd.read_csv('{}/data/dataset/train_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
     val = pd.read_csv('{}/data/dataset/val_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
     test = pd.read_csv('{}/data/dataset/test_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
@@ -80,8 +84,8 @@ if __name__ == '__main__':
     print('build_model\n')
     model_lstm = build_model(embedding_matrix=tri_model.wv.vectors, input_length=X.shape[1])
     early_stopping_callback = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=5, verbose=0, mode='auto')
-    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint('{}/lstm_model.h5', verbose=0, save_best_only=True, monitor='val_loss')
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint('{}/lstm_model.h5'.format(CUR_DIR), verbose=0, save_best_only=True, monitor='val_loss')
 
     print('trained\n')
-    batch_size = 1024
+    batch_size = 4
     trained = model_lstm.fit(X, y, epochs=30, batch_size=batch_size, validation_data=(X_val, y_val), callbacks=[early_stopping_callback, model_checkpoint_callback])
