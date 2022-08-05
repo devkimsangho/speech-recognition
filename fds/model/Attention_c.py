@@ -46,6 +46,10 @@ class Attention(Layer):
 
         eij = K.reshape(K.dot(K.reshape(x, (-1, features_dim)), K.reshape(self.W, (features_dim, 1))), (-1, step_dim))
 
+        if self.bias:
+            eij += self.b
+
+        eij = K.tanh(eij)
         a = K.exp(eij)
 
         if mask is not None:
@@ -59,3 +63,15 @@ class Attention(Layer):
 
     def compute_output_shape(self, input_shape):
         return input_shape[0], self.features_dim
+
+    def get_config(self):
+        config = super().get_config().copy()
+        config.update({
+            'step_dim': self.step_dim,
+            'W_regularizer': self.W_regularizer,
+            'b_regularizer': self.b_regularizer,
+            'W_constraint': self.W_constraint,
+            'b_constraint': self.b_constraint,
+            'bias': self.bias,
+        })
+        return config

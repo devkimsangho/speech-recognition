@@ -15,3 +15,5 @@ def tokenizer(data, pos=['Noun', 'Verb', 'Adjective', 'Adverb'], stopword=['ㄱ'
     tokened = okt.pos(data)
 
     return [word for word, tag in tokened if tag in pos and word not in stopword]
+
+# .str.replace(' ', '')

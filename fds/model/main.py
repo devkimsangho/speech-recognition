@@ -32,32 +32,40 @@ ROOT_DIR = os.path.dirname((PARENT_DIR))
 
 if __name__ == '__main__':
 
-    dataset = pd.read_csv('{}/data/dataset/dataset.csv'.format(PARENT_DIR), names=['text', 'fishing'])
-    dataset = preprocessing.remove_spectial_character(dataset)
-    dataset['length'] = dataset['text'].apply(lambda x: len(x))
-    print(len(dataset))
-    dataset = dataset.drop(dataset[dataset['length'] > 4000].index)
-    print(len(dataset))
-    print('Dataset 분리\n')
-    # 데이터 셋 분리
-    train = dataset[:4784]
-    test = dataset[4784:]
+    # dataset = pd.read_csv('{}/data/dataset/dataset.csv'.format(PARENT_DIR), names=['text', 'fishing'])
+    # dataset = preprocessing.remove_spectial_character(dataset)
+    # dataset['length'] = dataset['text'].apply(lambda x: len(x))
+    # # dataset = dataset.drop(dataset[dataset['length'] > 6000].index)
 
-    # print('토큰화 \n')
-    # # 토큰화 진행
-    train['tokenized'] = train['text(clean)'].apply(preprocessing.tokenizer)
-    test['tokenized'] = test['text(clean)'].apply(preprocessing.tokenizer)
+    # print('Dataset 분리\n')
+    # # 데이터 셋 분리
+    # train = dataset[:4784]
+    # test = dataset[4784:]
+    # train = train.drop(train[train['length'] > 6000].index)
 
-    # print('train/val 분리\n')
-    # train set test-val 분리
-    train, val = train_test_split(train, test_size=0.3, random_state=42)
-    train = pd.read_csv('{}/data/dataset/train_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
-    val = pd.read_csv('{}/data/dataset/val_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
-    test = pd.read_csv('{}/data/dataset/test_ex.csv'.format(PARENT_DIR), names=['text', 'fishing', 'text(clean)', 'tokenized'])
+    # # print('토큰화 \n')
+    # # # 토큰화 진행
+    # train['tokenized'] = train['text(clean)'].apply(preprocessing.tokenizer)
+    # test['tokenized'] = test['text(clean)'].apply(preprocessing.tokenizer)
+
+    # # print('train/val 분리\n')
+    # # train set test-val 분리
+    # train, val = train_test_split(train, test_size=0.3, random_state=42)
+    train = pd.read_csv('{}/data/dataset/train_6000.csv'.format(PARENT_DIR), names=['text', 'fishing', 'length', 'text(clean)', 'tokenized'])
+    val = pd.read_csv('{}/data/dataset/val_6000.csv'.format(PARENT_DIR), names=['text', 'fishing', 'length', 'text(clean)', 'tokenized'])
+    test = pd.read_csv('{}/data/dataset/test_6000.csv'.format(PARENT_DIR), names=['text', 'fishing', 'length', 'text(clean)', 'tokenized'])
+
+    print(len(train)+len(val)+len(test))
     print('w2v model load\n')
     bigrams = Phrases(sentences=train.tokenized)
     trigrams = Phrases(sentences=bigrams[train.tokenized])
 
+    # tr = pd.DataFrame(train)
+    # tr.to_csv('{}/data/dataset/train_6000.csv'.format(PARENT_DIR), header=None, index=None)
+    # va = pd.DataFrame(val)
+    # va.to_csv('{}/data/dataset/val_6000.csv'.format(PARENT_DIR), header=None, index=None)
+    # te = pd.DataFrame(test)
+    # te.to_csv('{}/data/dataset/test_6000.csv'.format(PARENT_DIR), header=None, index=None)
     N_SPLITS = 5
     EMBEDDING_SIZE = 256
 
@@ -87,5 +95,5 @@ if __name__ == '__main__':
     model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint('{}/lstm_model.h5'.format(CUR_DIR), verbose=0, save_best_only=True, monitor='val_loss')
 
     print('trained\n')
-    batch_size = 4
+    batch_size = 32
     trained = model_lstm.fit(X, y, epochs=30, batch_size=batch_size, validation_data=(X_val, y_val), callbacks=[early_stopping_callback, model_checkpoint_callback])
