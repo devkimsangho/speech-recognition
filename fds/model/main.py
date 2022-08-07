@@ -96,4 +96,26 @@ if __name__ == '__main__':
 
     print('trained\n')
     batch_size = 32
-    trained = model_lstm.fit(X, y, epochs=30, batch_size=batch_size, validation_data=(X_val, y_val), callbacks=[early_stopping_callback, model_checkpoint_callback])
+    # trained = model_lstm.fit(X, y, epochs=30, batch_size=batch_size, validation_data=(X_val, y_val), callbacks=[early_stopping_callback, model_checkpoint_callback])
+
+    # import matplotlib.pyplot as plt
+    # plt.plot(trained.history['acc'])
+    # plt.plot(trained.history['val_acc'])
+    # plt.title('Model accuracy')
+    # plt.ylabel('Accuracy')
+    # plt.xlabel('Epoch')
+    # plt.legend(['Train', 'Val'], loc='upper left')
+    # plt.show()
+
+    # plt.plot(trained.history['loss'])
+    # plt.plot(trained.history['val_loss'])
+    # plt.title('Model loss')
+    # plt.ylabel('Loss')
+    # plt.xlabel('Epoch')
+    # plt.legend(['Train', 'Val'], loc='upper left')
+    # plt.show()
+
+    trained = model_lstm.load_weights('{}/lstm_model.h5'.format(CUR_DIR))
+    model_lstm.evaluate(X_val, y_val, batch_size=batch_size, workers=4)
+    prediction = model_lstm.predict(X_test)
+    print(prediction)
