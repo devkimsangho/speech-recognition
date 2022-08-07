@@ -1,9 +1,12 @@
 from konlpy.tag import Okt
-
+import re
 
 # 구두점과 특수문자 제거
+
+
 def remove_spectial_character(dataset):
-    dataset['text(clean)'] = dataset['text'].str.replace('[\\WX]', ' ')
+    dataset['text(clean)'] = dataset['text'].str.replace('[^가-힣\s]+', ' ')
+    dataset['text(clean)'] = dataset['text(clean)'].str.replace('  ', ' ')
 
     return dataset
 
