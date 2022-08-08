@@ -13,7 +13,7 @@ def vectorize_data(data, vocab: dict) -> list:
 
 def integer_indexing(data, maxlen, tri_model, padding='post'):
     x = pad_sequences(
-        sequences=vectorize_data(data, vocab=tri_model.vocab),
+        sequences=vectorize_data(data, vocab=tri_model.key_to_index),
         maxlen=maxlen,
         padding=padding
     )

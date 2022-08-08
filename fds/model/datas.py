@@ -11,11 +11,11 @@ def load_data(path):
     return dataset
 
 
-def load_preprocessed_data(path):
-    """전처리 되어 있는 데이터 load"""
-    dataset = pd.read_csv(path, names=['text', 'fishing', 'length', 'text(clean)', 'tokenized'])
-
-    return dataset
+def load_predict_data(path):
+    """예측을 위한 데이터 load"""
+    data = pd.read_csv(path, names=['text'])
+    data['length'] = data['text'].apply(lambda x: len(x))
+    return data
 
 
 def remove_some_dataset(dataset, under=0, over=None):
